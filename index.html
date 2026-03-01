@@ -306,12 +306,13 @@
         const SUPABASE_URL = 'https://rssngbdpgcxkkmaiekqe.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzc25nYmRwZ2N4a2ttYWlla3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxOTkxNDYsImV4cCI6MjA4Nzc3NTE0Nn0.gk3El0B2MENVBdzlD8ZM7xFslNsNmfgvKoCZ3U76HWk';
 
-        let supabase = null;
+        let db = null;
         let useLocal = false;
 
         try {
             if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY') {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const { createClient } = window.supabase;
+                db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             } else {
                 useLocal = true;
             }
@@ -458,7 +459,7 @@
             }
 
             try {
-                const { data, error } = await supabase
+                const { data, error } = await db
                     .from('checklist')
                     .select('item_id, checked');
 
@@ -486,7 +487,7 @@
             }
 
             try {
-                const { error } = await supabase
+                const { error } = await db
                     .from('checklist')
                     .upsert({ item_id: itemId, checked }, { onConflict: 'item_id' });
 
