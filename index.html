@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialNow – Feedback Checklist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-hover: #1a1a1a;
+            --border: #222;
+            --border-light: #333;
+            --text: #f0f0f0;
+            --text-secondary: #888;
+            --accent: #4f46e5;
+            --accent-light: #6366f1;
+            --green: #22c55e;
+            --green-bg: rgba(34, 197, 94, 0.1);
+            --orange: #f59e0b;
+            --orange-bg: rgba(245, 158, 11, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .logo {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-light);
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .progress-bar-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 40px;
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .progress-count {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        .progress-track {
+            background: var(--border);
+            border-radius: 8px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--green));
+            border-radius: 8px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-number {
+            background: var(--accent);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .section-badge {
+            margin-left: auto;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--border);
+            color: var(--text-secondary);
+        }
+
+        .section-badge.complete {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+
+        .section-summary {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border: 1px solid transparent;
+        }
+
+        .checklist-item:hover {
+            background: var(--surface-hover);
+            border-color: var(--border);
+        }
+
+        .checklist-item.checked {
+            opacity: 0.5;
+        }
+
+        .checklist-item.checked .item-text {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border-light);
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-top: 1px;
+        }
+
+        .checklist-item.checked .checkbox {
+            background: var(--green);
+            border-color: var(--green);
+        }
+
+        .checkbox svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .checklist-item.checked .checkbox svg {
+            opacity: 1;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-text {
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .item-detail {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .subsection-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-light);
+            margin: 20px 0 8px 16px;
+        }
+
+        .connection-status {
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .connection-status.connected {
+            color: var(--green);
+        }
+
+        .connection-status.offline {
+            color: var(--orange);
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 24px 16px 60px; }
+            h1 { font-size: 24px; }
+            .section-title { font-size: 17px; }
+            .progress-bar-container { padding: 16px; border-radius: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">SocialNow</div>
+            <h1>Feedback & Doorontwikkeling</h1>
+            <p class="subtitle">Brand & Content Systeem – Checklist</p>
+        </header>
+
+        <div class="progress-bar-container">
+            <div class="progress-header">
+                <span class="progress-label">Voortgang</span>
+                <span class="progress-count" id="progressCount">0 / 0</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div id="app"></div>
+
+        <div class="connection-status" id="connectionStatus">Verbinden...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ── CONFIG ──
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+        let supabase = null;
+        let useLocal = false;
+
+        try {
+            if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY') {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } else {
+                useLocal = true;
+            }
+        } catch (e) {
+            useLocal = true;
+        }
+
+        // ── CHECKLIST DATA ──
+        const sections = [
+            {
+                id: 'brand-guide',
+                number: '1',
+                title: 'Brand Guide – Afronding',
+                summary: 'De brand guide staat sterk. Professionele, website-achtige opzet. Nog een paar afrondende punten nodig voor het onderdeel echt solide is.',
+                items: [
+                    { id: 'bg-1', text: 'Brand guide delen via Google AI Studio', detail: 'Zodat klant zelf kan finetunen' },
+                    { id: 'bg-2', text: 'NL/EN toggle toevoegen', detail: 'Tweetalige versie in brand guide' },
+                    { id: 'bg-3', text: 'Missie en strategie aanscherpen', detail: 'Teksten verfijnen op basis van feedback' },
+                    { id: 'bg-4', text: 'Identiteitsonderdelen bijstellen', detail: 'Kleine aanpassingen in identiteit' },
+                    { id: 'bg-5', text: 'Consistentie-check met website', detail: 'Button-interacties en visuele details moeten exact overeenkomen met live site' },
+                    { id: 'bg-6', text: 'Zwarte tekstvariant van logo toevoegen', detail: 'Voor documenten en lichte achtergronden' },
+                ]
+            },
+            {
+                id: 'instagram-feed',
+                number: '2',
+                title: 'Instagram Feed – Contentstrategie',
+                summary: 'Van losse posts naar een strategisch Instagram-systeem. Dynamisch, afwisselend, visueel aantrekkelijk en consistent. De feed als geheel moet kloppen.',
+                subsections: [
+                    {
+                        label: 'Strategische opzet',
+                        items: [
+                            { id: 'ig-1', text: 'Feedstrategie uitwerken', detail: 'Hoe posts elkaar visueel opvolgen, variatie binnen herkenbare stijl' },
+                            { id: 'ig-2', text: 'Bewuste keuze onderkant posts', detail: 'Website/telefoonnummer standaard op elke post? Strategisch bepalen.' },
+                        ]
+                    },
+                    {
+                        label: 'Template 1: Case Study (carrousel – 5 slides)',
+                        items: [
+                            { id: 'ig-3', text: 'Slide 1: Klantvisual + punchline', detail: 'Krachtige opening' },
+                            { id: 'ig-4', text: 'Slide 2: Doel van de klant', detail: 'Wat wilde de klant bereiken?' },
+                            { id: 'ig-5', text: 'Slide 3: Wat wij hebben gedaan', detail: 'Onze aanpak' },
+                            { id: 'ig-6', text: 'Slide 4: Resultaat', detail: 'Concrete resultaten' },
+                            { id: 'ig-7', text: 'Slide 5: CTA', detail: 'Call-to-action slide' },
+                        ]
+                    },
+                    {
+                        label: 'Template 2: Testimonial',
+                        items: [
+                            { id: 'ig-8', text: 'Testimonial template ontwerpen', detail: 'Mobile-first, grote leesbare typografie, Instagram-proof' },
+                            { id: 'ig-9', text: 'Tekstgrootte aanpassen', detail: 'Huidige tekst is te klein' },
+                            { id: 'ig-10', text: 'Meerdere slides overwegen', detail: 'Gezicht/klant → Review → CTA opbouw' },
+                        ]
+                    },
+                    {
+                        label: 'Template 3: Creative / Thought Leadership',
+                        items: [
+                            { id: 'ig-11', text: 'Creative template ontwerpen', detail: 'Scroll-stoppend, dynamisch, aantrekkelijk' },
+                            { id: 'ig-12', text: 'Visuele structuur voor checklists/tips/mythes', detail: 'Bijv. e-commerce checklist, campagne-stappen, Google Ads mythes' },
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'stories-highlights',
+                number: '3',
+                title: 'Instagram Stories & Highlights',
+                summary: 'Stories en highlights als integraal onderdeel van het merk- en contentconcept. Elke highlight is een mini-structuur met meerdere slides.',
+                subsections: [
+                    {
+                        label: 'Highlight templates (6 categorieën)',
+                        items: [
+                            { id: 'sh-1', text: 'Cases highlight', detail: 'Intro → Klantcontext → Aanpak → Resultaat → CTA' },
+                            { id: 'sh-2', text: 'Reviews highlight', detail: 'Meerdere slides met review-structuur' },
+                            { id: 'sh-3', text: 'Aanpak highlight', detail: 'Probleem → Methode → Waarom dit werkt → Resultaat → CTA' },
+                            { id: 'sh-4', text: 'FAQ highlight', detail: 'Veelgestelde vragen structuur' },
+                            { id: 'sh-5', text: 'Over ons / Waarom wij anders zijn', detail: 'Onderscheidende positionering' },
+                            { id: 'sh-6', text: 'Quick wins highlight', detail: 'Snelle waarde-tips' },
+                            { id: 'sh-7', text: 'Consistente icon-stijl voor highlights', detail: 'Alle highlight-covers in één stijl' },
+                        ]
+                    },
+                    {
+                        label: '"Start here" storytelling-journey',
+                        items: [
+                            { id: 'sh-8', text: '"Start here" highlight uitwerken', detail: 'Mini-onboarding voor nieuwe bezoekers (ref: @florisvv)' },
+                            { id: 'sh-9', text: 'Opbouw: Intro → Context → Waarde → Bewijs → CTA', detail: 'Meerdere slides, strategisch ontworpen' },
+                        ]
+                    },
+                    {
+                        label: 'Story templates',
+                        items: [
+                            { id: 'sh-10', text: 'Interactieve story template 1 (poll)', detail: 'Engagement-gericht format' },
+                            { id: 'sh-11', text: 'Interactieve story template 2 (vraag)', detail: 'Engagement-gericht format' },
+                            { id: 'sh-12', text: 'CTA story template', detail: '"Claim je gratis audit" e.d.' },
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'offerte',
+                number: '4',
+                title: 'Offerte Template',
+                summary: 'Eén volledig bewerkbare Canva-template. Clean, professioneel, modern, in website-branding.',
+                items: [
+                    { id: 'of-1', text: 'Offerte template ontwerpen in Canva', detail: 'Clean, professioneel, modern' },
+                    { id: 'of-2', text: 'Website-branding toepassen', detail: 'Consistent met brand guide en site' },
+                    { id: 'of-3', text: 'Zwarte logo-variant verwerken', detail: 'Logo in zwart voor lichte achtergronden' },
+                    { id: 'of-4', text: 'Dupliceerbaar maken', detail: 'Makkelijk te kopiëren voor nieuwe offertes' },
+                ]
+            },
+            {
+                id: 'linkedin',
+                number: '5',
+                title: 'LinkedIn Banners',
+                summary: 'Rustig, professioneel en positionerend. Twee formaten nodig.',
+                items: [
+                    { id: 'li-1', text: 'Persoonlijk profiel banner (1584 × 396 px)', detail: 'Rustig, professioneel design' },
+                    { id: 'li-2', text: 'Bedrijfspagina banner (1128 × 191 px)', detail: 'Consistent met persoonlijk profiel' },
+                ]
+            },
+            {
+                id: 'email',
+                number: '6',
+                title: 'E-mailhandtekening',
+                summary: 'Professioneel, minimalistisch. Strak en niet druk.',
+                items: [
+                    { id: 'em-1', text: 'E-mailhandtekening ontwerpen', detail: 'Naam + functie, contactgegevens, website' },
+                    { id: 'em-2', text: 'Subtiele CTA toevoegen', detail: 'Eventueel een zachte call-to-action' },
+                    { id: 'em-3', text: 'Alles bewerkbaar opleveren', detail: 'HTML of Canva format' },
+                ]
+            }
+        ];
+
+        // ── STATE ──
+        let checkedItems = {};
+
+        // ── PERSISTENCE ──
+        async function loadState() {
+            if (useLocal) {
+                const stored = localStorage.getItem('socialnow-checklist');
+                checkedItems = stored ? JSON.parse(stored) : {};
+                updateStatus('localStorage modus', 'offline');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('checklist')
+                    .select('item_id, checked');
+
+                if (error) throw error;
+
+                checkedItems = {};
+                (data || []).forEach(row => {
+                    checkedItems[row.item_id] = row.checked;
+                });
+                updateStatus('Verbonden met Supabase', 'connected');
+            } catch (e) {
+                console.error('Supabase load error:', e);
+                const stored = localStorage.getItem('socialnow-checklist');
+                checkedItems = stored ? JSON.parse(stored) : {};
+                useLocal = true;
+                updateStatus('Offline modus (localStorage)', 'offline');
+            }
+        }
+
+        async function saveItem(itemId, checked) {
+            if (useLocal) {
+                checkedItems[itemId] = checked;
+                localStorage.setItem('socialnow-checklist', JSON.stringify(checkedItems));
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('checklist')
+                    .upsert({ item_id: itemId, checked }, { onConflict: 'item_id' });
+
+                if (error) throw error;
+            } catch (e) {
+                console.error('Supabase save error:', e);
+                checkedItems[itemId] = checked;
+                localStorage.setItem('socialnow-checklist', JSON.stringify(checkedItems));
+            }
+        }
+
+        function updateStatus(text, type) {
+            const el = document.getElementById('connectionStatus');
+            el.textContent = text;
+            el.className = 'connection-status ' + type;
+        }
+
+        // ── RENDER ──
+        function getAllItems() {
+            const all = [];
+            sections.forEach(section => {
+                if (section.items) {
+                    all.push(...section.items);
+                }
+                if (section.subsections) {
+                    section.subsections.forEach(sub => all.push(...sub.items));
+                }
+            });
+            return all;
+        }
+
+        function updateProgress() {
+            const allItems = getAllItems();
+            const total = allItems.length;
+            const done = allItems.filter(item => checkedItems[item.id]).length;
+            const pct = total > 0 ? (done / total) * 100 : 0;
+
+            document.getElementById('progressCount').textContent = `${done} / ${total}`;
+            document.getElementById('progressFill').style.width = pct + '%';
+
+            // Update section badges
+            sections.forEach(section => {
+                const sectionItems = [];
+                if (section.items) sectionItems.push(...section.items);
+                if (section.subsections) section.subsections.forEach(sub => sectionItems.push(...sub.items));
+
+                const sectionDone = sectionItems.filter(i => checkedItems[i.id]).length;
+                const badge = document.getElementById(`badge-${section.id}`);
+                if (badge) {
+                    badge.textContent = `${sectionDone}/${sectionItems.length}`;
+                    badge.className = sectionDone === sectionItems.length ? 'section-badge complete' : 'section-badge';
+                }
+            });
+        }
+
+        function renderItem(item) {
+            const isChecked = checkedItems[item.id] || false;
+            return `
+                <li class="checklist-item ${isChecked ? 'checked' : ''}" data-id="${item.id}" onclick="toggleItem('${item.id}')">
+                    <div class="checkbox">
+                        <svg viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="2.5 7 5.5 10.5 11.5 3.5"></polyline>
+                        </svg>
+                    </div>
+                    <div class="item-content">
+                        <div class="item-text">${item.text}</div>
+                        ${item.detail ? `<div class="item-detail">${item.detail}</div>` : ''}
+                    </div>
+                </li>
+            `;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            let html = '';
+
+            sections.forEach(section => {
+                html += `<div class="section">`;
+                html += `<div class="section-header">`;
+                html += `<div class="section-number">${section.number}</div>`;
+                html += `<div class="section-title">${section.title}</div>`;
+                html += `<div class="section-badge" id="badge-${section.id}">0/0</div>`;
+                html += `</div>`;
+
+                html += `<div class="section-summary">${section.summary}</div>`;
+
+                html += `<ul class="checklist">`;
+
+                if (section.items) {
+                    section.items.forEach(item => {
+                        html += renderItem(item);
+                    });
+                }
+
+                if (section.subsections) {
+                    section.subsections.forEach(sub => {
+                        html += `<div class="subsection-label">${sub.label}</div>`;
+                        sub.items.forEach(item => {
+                            html += renderItem(item);
+                        });
+                    });
+                }
+
+                html += `</ul></div>`;
+            });
+
+            app.innerHTML = html;
+            updateProgress();
+        }
+
+        async function toggleItem(id) {
+            const newState = !checkedItems[id];
+            checkedItems[id] = newState;
+
+            // Instant UI update
+            const el = document.querySelector(`[data-id="${id}"]`);
+            if (el) {
+                el.classList.toggle('checked', newState);
+            }
+            updateProgress();
+
+            await saveItem(id, newState);
+        }
+
+        // ── INIT ──
+        async function init() {
+            await loadState();
+            render();
+        }
+
+        init();
+    </script>
+</body>
+</html>
